@@ -1,46 +1,43 @@
 class UsersController < ApplicationController
     def index
         @users = User.all
-        render json: @users
+        render json: @users, each_serializer: UserSerializer
     end
-    
+
     def show
         @user = User.find(params[:id])
-        render json: @user
+
+        if @user
+            render json: {user: UserSerializer.new(@user)}, status: :ok
+        else
+            render json: {errors: ['User not found.']}, status: :not_found
+        end
     end
-    
+
     def create
-        @user = User.create(user_params)
-        if @user.valid?
-          @token = encode_token({ user_id: @user.id })
-          render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
+        @user = User.new(user_params)
+
+        if @user.save
+            token = jwt_encode({user_id: @user.id})
+            render json: {token: token, user: UserSerializer.new(@user)}, status: :ok
         else
-          render json: { error: 
-            @user.errors.full_messages 
-            # "Failed to Create User"
-            }, status: not_acceptable
-          #error: 'failed to create user'
-        end
-    end
-    
+            render json: {errors: (@user.errors.full_messages)}, status: :unprocessable_entity
+        end 
+    end 
+
     def update
-      # byebug
         @user = User.find(params[:id])
-        if @user.update(zombie: user_params[:zombie])
-          render json: @user
+        if @user.update(user_params)
+            render json: @user, each_serializer: UserSerializer.new(@user), status: :accepted
         else
-          render json: {error: @user.errors.full_messages}
-        end
-    end
-    
-    def delete
-        @user = User.find_by(params[:id])
-        @user.destroy
-    end
-    
-    private
-      
-    def user_params
-        params.require(:user).permit(:username, :password, :img_url, :zombie, :location_id, :id)
-    end
+            render json: {errors: @user.errors.full_messages}, status: :declined
+      end
+    end 
+
+   private 
+   
+   def user_params
+    params.require(:user).permit(:username, :password_digest, :img_url, :zombie)
+   end 
+
 end
