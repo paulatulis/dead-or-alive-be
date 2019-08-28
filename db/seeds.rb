@@ -11,12 +11,12 @@ Answer.destroy_all
 Question.destroy_all
 
 paula = User.create({
-    username: "paula", password_digest: "password", img_url: "https://pbs.twimg.com/profile_images/714265217727901696/d8qm1F9d_400x400.jpg", zombie: true
+    username: "paula", password: "password", img_url: "https://pbs.twimg.com/profile_images/714265217727901696/d8qm1F9d_400x400.jpg", zombie: true
 
 })
 
 tun = User.create({
-    username: "tun", password_digest: "password", img_url: "https://pbs.twimg.com/profile_images/714265217727901696/d8qm1F9d_400x400.jpg", zombie: false
+    username: "tun", password: "password", img_url: "https://pbs.twimg.com/profile_images/714265217727901696/d8qm1F9d_400x400.jpg", zombie: false
 
 })
 

@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+    
     def index
         @users = User.all
         render json: @users, each_serializer: UserSerializer
@@ -37,7 +38,7 @@ class UsersController < ApplicationController
    private 
    
    def user_params
-    params.require(:user).permit(:username, :password_digest, :img_url, :zombie)
+    params.require(:user).permit(:username, :password, :img_url, :zombie)
    end 
 
 end
